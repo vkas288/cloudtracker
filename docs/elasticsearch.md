@@ -13,6 +13,7 @@ Install the Python libraries using one of the provided Makefile targets:
 
 For elasticsearch v6.x:
 ```
+#apt-get install python3-venv
 python3 -m venv ./venv && source venv/bin/activate
 pip install git+https://github.com/duo-labs/cloudtracker.git#egg=cloudtracker[es6]
 ```
@@ -27,10 +28,13 @@ pip install git+https://github.com/duo-labs/cloudtracker.git#egg=cloudtracker[es
 Get the IAM data of the account
 
 ```
+#mkdir account-data
+#apt install awscli
 aws iam get-account-authorization-details > account-data/demo_iam.json
 ```
 
 ### Step 3
+#Create
 Edit the `config.yaml`.  You need to specify how to connect to the ElasticSearch cluster, what index the CloudTrail logs are stored in, and information about your AWS account, including the location of the IAM file created in Step 3.
 
 Example `config.yaml` file:
