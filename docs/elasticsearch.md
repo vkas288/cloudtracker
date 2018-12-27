@@ -205,7 +205,9 @@ cd lua_sandbox_extensions
 mkdir release
 cd release
 # Disable a bunch of extensions when we build this to avoid further dependencies
-cmake -DCMAKE_BUILD_TYPE=release -DEXT_aws=off -DEXT_kafka=off -DEXT_parquet=off -DEXT_jose=off -DEXT_postgres=off -DEXT_systemd=off -DEXT_snappy=off -DCPACK_GENERATOR=RPM ..
+cmake -DCMAKE_BUILD_TYPE=release -DEXT_aws=off -DEXT_snappy=off -DEXT_bit=on -DEXT_bloom_filter=on -DEXT_circular_buffer=on -DEXT_cjson=on -DEXT_compat=on -DEXT_cuckoo_filter=on -DEXT_elasticsearch=on -DEXT_gcp=off -DEXT_hindsight=on -DEXT_heka=on -DEXT_hyperloglog=on -DEXT_irc=off -DEXT_jose=off -DEXT_kafka=off -DEXT_libinjection=on -DEXT_lfs=on -DEXT_lpeg=on -DEXT_lsb=on -DEXT_maxminddb=off -DEXT_moz_ingest=on -DEXT_moz_logging=on -DEXT_moz_pioneer=on -DEXT_moz_security=on -DEXT_moz_telemetry=on -DEXT_openssl=off -DEXT_papertrail=on -DEXT_parquet=off -DEXT_postgres=off -DEXT_rjson=off -DEXT_sax=on -DEXT_socket=on -DEXT_ssl=off -DEXT_struct=on -DEXT_syslog=on -DEXT_systemd=off -DEXT_xxhash=on -DEXT_zlib=off -DCPACK_GENERATOR=DEB ..
+
+#add -DEXT_bit=on to above command
 make
 make packages
 sudo make install
@@ -215,6 +217,16 @@ sudo make install
 
 Now install Hindsight from https://github.com/mozilla-services/hindsight
 
+git clone https://github.com/mozilla-services/hindsight.git
+cd hindsight
+mkdir release
+cd release
+
+# Linux
+cmake -DCMAKE_BUILD_TYPE=release -DWITHOUT_OPENSSL=true ..
+make
+ctest
+cpack -G TGZ # (DEB|RPM|ZIP)
 
 Run a proxy
 -----------
