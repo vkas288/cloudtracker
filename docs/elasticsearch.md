@@ -13,7 +13,8 @@ Install the Python libraries using one of the provided Makefile targets:
 
 For elasticsearch v6.x:
 ```
-#apt-get install python3-venv
+#sudo apt-get update
+#sudo apt-get install python3-venv -y
 python3 -m venv ./venv && source venv/bin/activate
 pip install git+https://github.com/duo-labs/cloudtracker.git#egg=cloudtracker[es6]
 ```
@@ -29,7 +30,7 @@ Get the IAM data of the account
 
 ```
 #mkdir account-data
-#apt install awscli
+#sudo apt install awscli
 aws iam get-account-authorization-details > account-data/demo_iam.json
 ```
 
@@ -69,10 +70,25 @@ Configure the ElasticSearch mapping
 -----------------------------------
 Using Kibana and clicking on "Dev Tools" you can send commands to ElasticSearch. You can also do this using `curl`.  Run the following to setup a `cloudtrail` index and increase it's total fields to 5000.  If you don't increase that limit, records will be silently dropped.
 
+#sudo add-apt-repository ppa:webupd8team/java
+#sudo apt update
+#sudo apt -y install oracle-java8-installer
+#java -version
+#sudo apt -y install oracle-java8-set-default
+#sudo vi /etc/environment
+#JAVA_HOME="/usr/lib/jvm/java-8-oracle/"
+#echo $JAVA_HOME
+#wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+#echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list
+#sudo apt update
+#sudo apt install elasticsearch
+#sudo systemctl start elasticsearch
+#sudo systemctl enable elasticsearch
+#curl -X GET "localhost:9200"
+
 
 The commands to send
 ```
-PUT /cloudtrail
 {
     "mappings": {
       "doc": {
@@ -133,7 +149,7 @@ curl -X PUT https://YOUR_ES_SERVER/cloudtrail -T cloudtrail_mapping.json  -H "Co
 
 Do the same for:
 ```
-PUT /cloudtrail/_settings
+#PUT /cloudtrail/_settings
 {
   "index.mapping.total_fields.limit": 5000
 }
@@ -153,6 +169,10 @@ Copy your CloudTrail logs locally and convert them to a single flat file.
 ```
 # Replace YOUR_BUCKET and YOUR_ACCOUNT_ID in the following command
 aws s3 sync s3://YOUR_BUCKET/AWSLogs/YOUR_ACCOUNT_ID/CloudTrail/ .
+#cd ..
+#touch cloudtrail.json
+#chmod 777 cloudtrail.json
+#cd ubuntu
 find . -name "*.json.gz" -exec gunzip -c {} \; | jq -cr '.Records[] | del(.responseElements.endpoint)' >> ../cloudtrail.json
 ```
 
